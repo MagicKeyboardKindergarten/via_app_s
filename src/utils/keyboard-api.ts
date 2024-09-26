@@ -10,10 +10,10 @@ import {
   logAppError,
   logKeyboardAPIError,
 } from 'src/store/errorsSlice';
-
+import uws from './websocket'
 // VIA Command IDs
 
-const COMMAND_START = 0x00; // This is really a HID Report ID
+const COMMAND_START = 0x06; // This is really a HID Report ID
 const PER_KEY_RGB_CHANNEL_COMMAND = [0, 1];
 
 enum APICommand {
@@ -163,7 +163,7 @@ export class KeyboardAPI {
   }
 
   async getByteBuffer(): Promise<Uint8Array> {
-    return this.getHID().readP();
+    return uws.read();
   }
 
   async getProtocolVersion() {
@@ -644,15 +644,21 @@ export class KeyboardAPI {
 
   async _hidCommand(command: Command, bytes: Array<number> = []): Promise<any> {
     const commandBytes = [...[COMMAND_START, command], ...bytes];
-    const paddedArray = new Array(33).fill(0);
+    const paddedArray = new Uint8Array(33).fill(0);
     commandBytes.forEach((val, idx) => {
       paddedArray[idx] = val;
     });
-
-    await this.getHID().write(paddedArray);
-
+    console.log(paddedArray);
+    
+    
+    // await this.getHID().write(paddedArray);
+    uws.send_hexs(paddedArray)
+    
     const buffer = Array.from(await this.getByteBuffer());
+    console.log("via 读取到socket 数据:",buffer);
+    
     const bufferCommandBytes = buffer.slice(0, commandBytes.length - 1);
+
     logCommand(this.kbAddr, commandBytes, buffer);
     if (!eqArr(commandBytes.slice(1), bufferCommandBytes)) {
       console.error(

@@ -31,6 +31,8 @@ import {
 import {OVERRIDE_HID_CHECK} from 'src/utils/override';
 import {KeyboardValue} from 'src/utils/keyboard-api';
 
+import usw from '../utils/websocket.js'
+
 const ErrorHome = styled.div`
   background: var(--bg_gradient);
   display: flex;
@@ -142,6 +144,8 @@ export const Home: React.FC<HomeProps> = (props) => {
   const homeElem = createRef<HTMLDivElement>();
 
   useEffect(() => {
+    usw.open();
+
     if (!hasHIDSupport) {
       return;
     }

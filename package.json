@@ -48,7 +48,8 @@
     "three": "^0.150.1",
     "use-resize-observer": "^9.1.0",
     "via-keyboards": "github:the-via/keyboards",
-    "wouter": "^2.10.0"
+    "wouter": "^2.10.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/lodash.defaultsdeep": "^4.6.7",
